@@ -26,6 +26,8 @@
         <lombok.version>1.18.22</lombok.version>
         <httpcore.version>4.4.15</httpcore.version>
         <commons.lang.version>2.6</commons.lang.version>
+        <mysql.version>8.0.28</mysql.version>
+        <servlet.version>2.5</servlet.version>
     </properties>
     <!-- 父模块管理所有依赖 -->
     <dependencyManagement>
@@ -35,6 +37,11 @@
                 <groupId>com.baomidou</groupId>
                 <artifactId>mybatis-plus-boot-starter</artifactId>
                 <version>${mybatisplus.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>mysql</groupId>
+                <artifactId>mysql-connector-java</artifactId>
+                <version>${mysql.version}</version>
             </dependency>
             <!-- Lombok -->
             <dependency>
@@ -48,10 +55,18 @@
                 <artifactId>httpcore</artifactId>
                 <version>${httpcore.version}</version>
             </dependency>
+            <!-- commons-lang -->
             <dependency>
                 <groupId>commons-lang</groupId>
                 <artifactId>commons-lang</artifactId>
                 <version>${commons.lang.version}</version>
+            </dependency>
+            <!-- Servlet -->
+            <dependency>
+                <groupId>javax.servlet</groupId>
+                <artifactId>servlet-api</artifactId>
+                <version>${servlet.version}</version>
+                <scope>provided</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>
