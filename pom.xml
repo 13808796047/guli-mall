@@ -16,6 +16,43 @@
         <module>gulimall-member</module>
         <module>gulimall-coupon</module>
         <module>renren-fast</module>
+        <module>renren-generator</module>
+        <module>gulimall-common</module>
     </modules>
-
+    <!-- 版本管理 -->
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <mybatisplus.version>3.5.1</mybatisplus.version>
+        <lombok.version>1.18.22</lombok.version>
+        <httpcore.version>4.4.15</httpcore.version>
+        <commons.lang.version>2.6</commons.lang.version>
+    </properties>
+    <!-- 父模块管理所有依赖 -->
+    <dependencyManagement>
+        <dependencies>
+            <!-- MybatisPlus -->
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus-boot-starter</artifactId>
+                <version>${mybatisplus.version}</version>
+            </dependency>
+            <!-- Lombok -->
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>${lombok.version}</version>
+            </dependency>
+            <!-- HttpStatus -->
+            <dependency>
+                <groupId>org.apache.httpcomponents</groupId>
+                <artifactId>httpcore</artifactId>
+                <version>${httpcore.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-lang</groupId>
+                <artifactId>commons-lang</artifactId>
+                <version>${commons.lang.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 </project>
