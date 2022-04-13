@@ -4,6 +4,7 @@ import com.aliyun.oss.OSS;
 import com.aliyun.oss.common.utils.BinaryUtil;
 import com.aliyun.oss.model.MatchMode;
 import com.aliyun.oss.model.PolicyConditions;
+import com.summer.common.utils.R;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -35,12 +36,12 @@ public class OssController {
     String accessKey;
 
     @RequestMapping("/thirdparty/oss/policy")
-    public Map<String, String> policy() {
+    public R policy() {
 
         String host = "https://" + bucket + "." + endpoint; // host的格式为 bucketname.endpoint
 
         String format = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
-        String dir = format; // 用户上传文件时指定的前缀。
+        String dir = format + "/"; // 用户上传文件时指定的前缀。
 
         Map<String, String> respMap = null;
         try {
@@ -73,6 +74,6 @@ public class OssController {
         } finally {
             ossClient.shutdown();
         }
-        return respMap;
+        return R.ok().put("data", respMap);
     }
 }
