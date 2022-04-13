@@ -7,11 +7,14 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
 class GulimallProductApplicationTests {
-@Autowired
+    @Autowired
     BrandService brandService;
+
+
     @Test
     void contextLoads() {
         brandService.list().forEach(System.out::println);
     }
+
 
 }

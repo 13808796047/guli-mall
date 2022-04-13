@@ -8,23 +8,27 @@
         <version>2.6.6</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>com.summer</groupId>
-    <artifactId>gulimall-product</artifactId>
+    <groupId>com.example</groupId>
+    <artifactId>gulimall-third-party</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>gulimall-product</name>
-    <description>gulimall-product</description>
+    <name>gulimall-third-party</name>
+    <description>gulimall-third-party</description>
     <properties>
         <java.version>1.8</java.version>
         <spring-cloud.version>2021.0.1</spring-cloud.version>
     </properties>
     <dependencies>
-        <!-- common -->
         <dependency>
             <groupId>com.summer</groupId>
             <artifactId>gulimall-common</artifactId>
             <version>0.0.1-SNAPSHOT</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.baomidou</groupId>
+                    <artifactId>mybatis-plus-boot-starter</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
-
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
@@ -33,12 +37,12 @@
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-openfeign</artifactId>
         </dependency>
-        <!-- &lt;!&ndash; 阿里云oss &ndash;&gt; -->
-        <!-- <dependency> -->
-        <!--     <groupId>com.aliyun.oss</groupId> -->
-        <!--     <artifactId>aliyun-sdk-oss</artifactId> -->
-        <!--     <version>3.10.2</version> -->
-        <!-- </dependency> -->
+        <!--springcloudalibaba-oss-->
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-alicloud-oss</artifactId>
+            <version>2.2.0.RELEASE</version>
+        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
