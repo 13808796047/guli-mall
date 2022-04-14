@@ -12,6 +12,7 @@ import com.summer.product.service.BrandService;
 import com.summer.product.service.CategoryBrandRelationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Map;
 
@@ -38,6 +39,8 @@ public class BrandServiceImpl extends ServiceImpl<BrandDao, BrandEntity> impleme
         return new PageUtils(page);
     }
 
+    // 事务控制
+    @Transactional
     @Override
     public void updateDetail(BrandEntity brand) {
 

@@ -2,13 +2,18 @@ package com.summer.product.controller;
 
 import com.summer.common.utils.PageUtils;
 import com.summer.common.utils.R;
+import com.summer.product.entity.AttrEntity;
 import com.summer.product.entity.AttrGroupEntity;
+import com.summer.product.service.AttrAttrgroupRelationService;
 import com.summer.product.service.AttrGroupService;
+import com.summer.product.service.AttrService;
 import com.summer.product.service.CategoryService;
+import com.summer.product.vo.AttrGroupRelationVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 
@@ -23,9 +28,54 @@ import java.util.Map;
 @RequestMapping("product/attrgroup")
 public class AttrGroupController {
     @Autowired
+    AttrAttrgroupRelationService attrAttrgroupRelationService;
+    @Autowired
     private AttrGroupService attrGroupService;
     @Autowired
     private CategoryService categoryService;
+    @Autowired
+    private AttrService attrService;
+
+    @PostMapping("/attr/relation")
+    public R addRelation(@RequestBody List<AttrGroupRelationVo> vos) {
+        attrAttrgroupRelationService.saveBatch(vos);
+        return R.ok();
+    }
+
+    /**
+     * 查询分组中关联的属性
+     *
+     * @param attrgroupId
+     * @return
+     */
+    @GetMapping("/{attrgroupId}/attr/relation")
+    public R attrRelation(@PathVariable Long attrgroupId) {
+
+        List<AttrEntity> entities = attrService.getRelationAttr(attrgroupId);
+
+
+        return R.ok().put("data", entities);
+    }
+
+    @GetMapping("/{attrgroupId}/noattr/relation")
+    public R attrNoRelation(@PathVariable Long attrgroupId, @RequestParam Map<String, Object> params) {
+
+
+        PageUtils page = attrService.getNoRelationAttr(params, attrgroupId);
+        return R.ok().put("page", page);
+    }
+
+    /**
+     * 删除分组中的属性
+     *
+     * @return
+     */
+    @PostMapping("/attr/relation/delete")
+    public R deleteRelation(@RequestBody AttrGroupRelationVo[] vos) {
+
+        attrService.deleteRelation(vos);
+        return R.ok();
+    }
 
     /**
      * 列表

@@ -11,6 +11,7 @@ import com.summer.product.service.CategoryBrandRelationService;
 import com.summer.product.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -71,6 +72,8 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
         return parentPath.toArray(new Long[parentPath.size()]);
     }
 
+    // 事务控制
+    @Transactional
     @Override
     public void updateCascade(CategoryEntity category) {
 
