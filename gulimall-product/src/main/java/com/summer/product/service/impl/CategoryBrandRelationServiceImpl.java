@@ -16,7 +16,9 @@ import com.summer.product.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 
 @Service("categoryBrandRelationService")
@@ -65,6 +67,18 @@ public class CategoryBrandRelationServiceImpl extends ServiceImpl<CategoryBrandR
     public void updateCategory(Long catId, String name) {
 
         this.baseMapper.updateCategory(catId, name);
+    }
+
+    @Override
+    public List<BrandEntity> getBrandsByCatId(Long catId) {
+        // 查询关联表里的品牌
+        List<CategoryBrandRelationEntity> relationEntities = this.baseMapper.selectList(new QueryWrapper<CategoryBrandRelationEntity>()
+                .eq("catelog_id", catId));
+        List<BrandEntity> brandEntities = relationEntities.stream().map(item -> {
+            BrandEntity brandEntity = brandService.getById(item.getBrandId());
+            return brandEntity;
+        }).collect(Collectors.toList());
+        return brandEntities;
     }
 
 }

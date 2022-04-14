@@ -76,7 +76,7 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
     @Override
     public PageUtils queryBaseAttrPage(Map<String, Object> params, Long catelogId, String type) {
         QueryWrapper<AttrEntity> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("attr_type", "base".equalsIgnoreCase(type) ? ProductConstant.AttrEnum.ATTR_TYPE_BASE.getCode() : ProductConstant.AttrEnum.ATTR_TYPE_BASE.getCode());
+        queryWrapper.eq("attr_type", ProductConstant.AttrEnum.ATTR_TYPE_BASE.getCode());
         // 根据分类ID查询
         if (catelogId != 0) {
             queryWrapper.eq("catelog_id", catelogId);
@@ -94,15 +94,18 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
         // 查询分类名和分组名
         PageUtils pageUtils = new PageUtils(page);
         List<AttrEntity> records = page.getRecords();
+//        System.out.println(records);
         // 流式编程
         List<AttrRespVo> attrRespVos = records.stream().map(attrEntity -> {
             AttrRespVo attrRespVo = new AttrRespVo();
             BeanUtils.copyProperties(attrEntity, attrRespVo);
             // 先查询关联关系中的分组和分类
-            AttrAttrgroupRelationEntity attr_id = attrAttrgroupRelationService.getOne(new QueryWrapper<AttrAttrgroupRelationEntity>().eq("attr_id", attrEntity.getAttrId()));
-            if (null != attr_id) {
+            AttrAttrgroupRelationEntity relationEntity = attrAttrgroupRelationService.getOne(
+                    new QueryWrapper<AttrAttrgroupRelationEntity>()
+                            .eq("attr_id", attrEntity.getAttrId()));
+            if (relationEntity != null) {
                 // 查询分组
-                AttrGroupEntity attrGroupEntity = attrGroupDao.selectById(attr_id.getAttrGroupId());
+                AttrGroupEntity attrGroupEntity = attrGroupDao.selectById(relationEntity.getAttrGroupId());
 
                 // 设置分组名
                 attrRespVo.setGroupName(attrGroupEntity.getAttrGroupName());
@@ -118,6 +121,7 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
             return attrRespVo;
 
         }).collect(Collectors.toList());
+//        System.out.println(attrRespVos + "==========");
         // 设置到分页中
         pageUtils.setList(attrRespVos);
         return pageUtils;
