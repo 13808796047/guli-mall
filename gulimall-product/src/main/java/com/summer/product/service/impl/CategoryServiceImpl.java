@@ -10,9 +10,7 @@ import com.summer.product.entity.CategoryEntity;
 import com.summer.product.service.CategoryService;
 import org.springframework.stereotype.Service;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -51,6 +49,37 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
         //TODO 检查当前删除的菜单，是否被别的地方引用
         baseMapper.deleteBatchIds(asList);
     }
+
+    /**
+     * 收集完整路径
+     *
+     * @param catelogId
+     * @return
+     */
+    @Override // CategoryServiceImpl
+    public Long[] findCateLogPath(Long catelogId) {
+        List<Long> paths = new ArrayList<>();
+        List<Long> parentPath = findParentPath(catelogId, paths);
+        // 收集的时候是顺序 前端是逆序显示的 所以用集合工具类给它逆序一下
+        // 子父 转 父子
+        Collections.reverse(parentPath);
+        return parentPath.toArray(new Long[parentPath.size()]);
+    }
+
+    /**
+     * 递归收集所有父分类
+     */
+    private List<Long> findParentPath(Long catlogId, List<Long> paths) {
+        // 1、收集当前节点id
+        paths.add(catlogId);// 比如父子孙层级，返回的是 孙 子 父
+        CategoryEntity byId = this.getById(catlogId);
+        if (byId.getParentCid() != 0) {
+            // 递归
+            findParentPath(byId.getParentCid(), paths);
+        }
+        return paths;
+    }
+
 
     private List<CategoryEntity> getChildrens(CategoryEntity category, List<CategoryEntity> categories) {
         List<CategoryEntity> children = categories.stream().filter(item ->
