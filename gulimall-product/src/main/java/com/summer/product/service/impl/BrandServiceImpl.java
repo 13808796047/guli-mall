@@ -9,6 +9,8 @@ import com.summer.common.utils.Query;
 import com.summer.product.dao.BrandDao;
 import com.summer.product.entity.BrandEntity;
 import com.summer.product.service.BrandService;
+import com.summer.product.service.CategoryBrandRelationService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
@@ -17,6 +19,8 @@ import java.util.Map;
 @Service("brandService")
 public class BrandServiceImpl extends ServiceImpl<BrandDao, BrandEntity> implements BrandService {
 
+    @Autowired
+    private CategoryBrandRelationService categoryBrandRelationService;
 
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
@@ -32,6 +36,18 @@ public class BrandServiceImpl extends ServiceImpl<BrandDao, BrandEntity> impleme
         );
 
         return new PageUtils(page);
+    }
+
+    @Override
+    public void updateDetail(BrandEntity brand) {
+
+        // 保证关联表数据的更新
+        this.updateById(brand);
+        if (!StringUtils.isNullOrEmpty(brand.getName())) {
+            // 同步更新其他关联表的属性
+            categoryBrandRelationService.updateBrand(brand.getBrandId(), brand.getName());
+            // TODO 更新其他关联
+        }
     }
 
 }

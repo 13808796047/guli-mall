@@ -7,7 +7,9 @@ import com.summer.common.utils.PageUtils;
 import com.summer.common.utils.Query;
 import com.summer.product.dao.CategoryDao;
 import com.summer.product.entity.CategoryEntity;
+import com.summer.product.service.CategoryBrandRelationService;
 import com.summer.product.service.CategoryService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -16,6 +18,9 @@ import java.util.stream.Collectors;
 
 @Service("categoryService")
 public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity> implements CategoryService {
+
+    @Autowired
+    CategoryBrandRelationService categoryBrandRelationService;
 
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
@@ -64,6 +69,16 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
         // 子父 转 父子
         Collections.reverse(parentPath);
         return parentPath.toArray(new Long[parentPath.size()]);
+    }
+
+    @Override
+    public void updateCascade(CategoryEntity category) {
+
+        // 先更新自已
+        this.updateById(category);
+        // 更新关联
+        categoryBrandRelationService.updateCategory(category.getCatId(), category.getName());
+
     }
 
     /**
