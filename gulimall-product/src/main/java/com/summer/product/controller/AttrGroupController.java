@@ -9,6 +9,7 @@ import com.summer.product.service.AttrGroupService;
 import com.summer.product.service.AttrService;
 import com.summer.product.service.CategoryService;
 import com.summer.product.vo.AttrGroupRelationVo;
+import com.summer.product.vo.AttrGroupWithAttrsVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -40,6 +41,21 @@ public class AttrGroupController {
     public R addRelation(@RequestBody List<AttrGroupRelationVo> vos) {
         attrAttrgroupRelationService.saveBatch(vos);
         return R.ok();
+    }
+
+    /**
+     * 查询当前分类下所有的属性分组以及分组下的属性
+     *
+     * @param catelogId
+     * @return
+     */
+    @GetMapping("/{catelogId}/withattr")
+    public R getAttrGroupWithAttrs(@PathVariable Long catelogId) {
+
+        // 1. 查询当前分类下的所有属性分组
+        // 2. 查出每个属性分组的所有属性
+        List<AttrGroupWithAttrsVo> vos = attrGroupService.getAttrGroupWithAttrsByCatelogId(catelogId);
+        return R.ok().put("data", vos);
     }
 
     /**

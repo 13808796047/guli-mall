@@ -6,14 +6,14 @@ import lombok.Data;
  * @Description:
  * @Created: with IntelliJ IDEA.
  * @author: 夏沫止水
- * @createTime: 2020-05-30 15:39
+ * @createTime: 2020-06-23 18:59
  **/
 
 @Data
-public class BrandVo {
+public class AttrValueWithSkuIdVo {
 
-    private Long brandId;
+    private String attrValue;
 
-    private String brandName;
+    private String skuIds;
 
 }

@@ -93,16 +93,19 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
 
         // 查询分类名和分组名
         PageUtils pageUtils = new PageUtils(page);
+        // 分页后条数
         List<AttrEntity> records = page.getRecords();
 //        System.out.println(records);
         // 流式编程
         List<AttrRespVo> attrRespVos = records.stream().map(attrEntity -> {
             AttrRespVo attrRespVo = new AttrRespVo();
+//            // 拷贝到VO
             BeanUtils.copyProperties(attrEntity, attrRespVo);
-            // 先查询关联关系中的分组和分类
-            AttrAttrgroupRelationEntity relationEntity = attrAttrgroupRelationService.getOne(
-                    new QueryWrapper<AttrAttrgroupRelationEntity>()
-                            .eq("attr_id", attrEntity.getAttrId()));
+//            // 先查询关联关系中的分组和分类
+//            System.out.println(attrEntity.getAttrId() + "------");
+            AttrAttrgroupRelationEntity relationEntity = attrAttrgroupRelationDao.selectOne(
+                    new QueryWrapper<AttrAttrgroupRelationEntity>().eq("attr_id", attrEntity.getAttrId()));
+//            System.out.println(relationEntity);
             if (relationEntity != null) {
                 // 查询分组
                 AttrGroupEntity attrGroupEntity = attrGroupDao.selectById(relationEntity.getAttrGroupId());
@@ -119,10 +122,10 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
             }
 
             return attrRespVo;
-
+//
         }).collect(Collectors.toList());
 //        System.out.println(attrRespVos + "==========");
-        // 设置到分页中
+//        // 设置到分页中
         pageUtils.setList(attrRespVos);
         return pageUtils;
     }

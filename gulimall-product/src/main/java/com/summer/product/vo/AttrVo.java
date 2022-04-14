@@ -3,11 +3,15 @@ package com.summer.product.vo;
 import lombok.Data;
 
 /**
- * @author Summer
- * @date 2022/4/14 15:36
- */
+ * @Description:
+ * @Created: with IntelliJ IDEA.
+ * @author: 夏沫止水
+ * @createTime: 2020-05-29 08:43
+ **/
+
 @Data
 public class AttrVo {
+
     /**
      * 属性id
      */
@@ -21,10 +25,6 @@ public class AttrVo {
      */
     private Integer searchType;
     /**
-     * 值类型[0-为单个值，1-可以选择多个值]
-     */
-    private Integer valueType;
-    /**
      * 属性图标
      */
     private String icon;
@@ -33,7 +33,7 @@ public class AttrVo {
      */
     private String valueSelect;
     /**
-     * 属性类型[0-销售属性，1-基本属性
+     * 属性类型[0-销售属性，1-基本属性，2-既是销售属性又是基本属性]
      */
     private Integer attrType;
     /**
@@ -49,8 +49,6 @@ public class AttrVo {
      */
     private Integer showDesc;
 
-    /**
-     * 分组ID
-     */
     private Long attrGroupId;
+
 }

@@ -1,16 +1,17 @@
 package com.summer.product.service.impl;
 
-import org.springframework.stereotype.Service;
-import java.util.Map;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.summer.common.utils.PageUtils;
 import com.summer.common.utils.Query;
-
 import com.summer.product.dao.ProductAttrValueDao;
 import com.summer.product.entity.ProductAttrValueEntity;
 import com.summer.product.service.ProductAttrValueService;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Map;
 
 
 @Service("productAttrValueService")
@@ -24,6 +25,12 @@ public class ProductAttrValueServiceImpl extends ServiceImpl<ProductAttrValueDao
         );
 
         return new PageUtils(page);
+    }
+
+    @Override
+    public void saveProductAttr(List<ProductAttrValueEntity> collect) {
+
+        this.saveBatch(collect);
     }
 
 }

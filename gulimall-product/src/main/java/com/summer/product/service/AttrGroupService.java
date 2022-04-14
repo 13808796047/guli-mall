@@ -3,7 +3,9 @@ package com.summer.product.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.summer.common.utils.PageUtils;
 import com.summer.product.entity.AttrGroupEntity;
+import com.summer.product.vo.AttrGroupWithAttrsVo;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -18,5 +20,7 @@ public interface AttrGroupService extends IService<AttrGroupEntity> {
     PageUtils queryPage(Map<String, Object> params);
 
     PageUtils queryPage(Map<String, Object> params, Long categoryId);
+
+    List<AttrGroupWithAttrsVo> getAttrGroupWithAttrsByCatelogId(Long catelogId);
 }
 
