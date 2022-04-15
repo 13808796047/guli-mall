@@ -6,6 +6,9 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
   application:
     name: gulimall-product
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+
   cloud:
     nacos:
       discovery:

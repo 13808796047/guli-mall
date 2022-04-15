@@ -168,5 +168,37 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
         this.baseMapper.insert(spuInfoEntity);
     }
 
+    @Override
+    public PageUtils queryPageByCondition(Map<String, Object> params) {
+        QueryWrapper<SpuInfoEntity> wrapper = new QueryWrapper<>();
+
+        // 模糊查询条件
+        String key = (String) params.get("key");
+        if (!StringUtils.isNullOrEmpty(key)) {
+            wrapper.and(query -> {
+                query.eq("id", key).or().like("spu_name", key);
+            });
+        }
+        // 精确查询
+        String status = (String) params.get("status");
+        if (!StringUtils.isNullOrEmpty(status)) {
+            wrapper.eq("publish_status", status);
+        }
+        String brandId = (String) params.get("brandId");
+        if (!StringUtils.isNullOrEmpty(brandId)) {
+            wrapper.eq("brand_id", brandId);
+        }
+        String catelogId = (String) params.get("catelogId");
+        if (!StringUtils.isNullOrEmpty(catelogId)) {
+            wrapper.eq("catalog_id", catelogId);
+        }
+        IPage<SpuInfoEntity> page = this.page(
+                new Query<SpuInfoEntity>().getPage(params),
+                wrapper
+        );
+
+        return new PageUtils(page);
+    }
+
 
 }
