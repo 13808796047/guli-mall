@@ -5,6 +5,7 @@ import com.summer.common.utils.PageUtils;
 import com.summer.common.utils.R;
 import com.summer.coupon.entity.SkuFullReductionEntity;
 import com.summer.coupon.service.SkuFullReductionService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,14 +22,17 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping("coupon/skufullreduction")
+@Slf4j
 public class SkuFullReductionController {
     @Autowired
     private SkuFullReductionService skuFullReductionService;
+
 
     @PostMapping("/saveinfo")
     public R saveInfo(@RequestBody SkuReductionTo skuReductionTo) {
 
         skuFullReductionService.saveSkuReduction(skuReductionTo);
+
         return R.ok();
     }
 

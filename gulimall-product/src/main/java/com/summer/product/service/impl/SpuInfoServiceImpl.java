@@ -3,25 +3,29 @@ package com.summer.product.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.mysql.cj.util.StringUtils;
 import com.summer.common.to.SkuReductionTo;
 import com.summer.common.to.SpuBoundTo;
 import com.summer.common.utils.PageUtils;
 import com.summer.common.utils.Query;
+import com.summer.common.utils.R;
 import com.summer.product.dao.SpuInfoDao;
 import com.summer.product.entity.*;
 import com.summer.product.feign.CouponFeignService;
 import com.summer.product.service.*;
 import com.summer.product.vo.*;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-
+@Slf4j
 @Service("spuInfoService")
 public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> implements SpuInfoService {
 
@@ -58,6 +62,7 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
 
         return new PageUtils(page);
     }
+
 
     @Transactional
     @Override
@@ -100,7 +105,9 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
         BeanUtils.copyProperties(bounds, spuBoundTo);
         spuBoundTo.setSpuId(spuInfoEntity.getId());
         // 封装TO调用远程服务
-        couponFeignService.saveSpuBounds(spuBoundTo);
+        R r = couponFeignService.saveSpuBounds(spuBoundTo);
+
+        log.info("远程调用保存积分信息{}", r);
         // 5.保存当前spu对应的所有sku信息
         List<Skus> skus = vo.getSkus();
         skus.forEach(sku -> {
@@ -122,12 +129,15 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
             // 获取sku的id
             Long skuId = skuInfoEntity.getSkuId();
             List<SkuImagesEntity> imagesEntities = sku.getImages().stream().map(img -> {
-                SkuImagesEntity skuImagesEntity = new SkuImagesEntity();
-                skuImagesEntity.setSkuId(skuId);
-                skuImagesEntity.setImgUrl(img.getImgUrl());
-                skuImagesEntity.setDefaultImg(img.getDefaultImg());
-                return skuImagesEntity;
-            }).collect(Collectors.toList());
+                        SkuImagesEntity skuImagesEntity = new SkuImagesEntity();
+                        skuImagesEntity.setSkuId(skuId);
+                        skuImagesEntity.setImgUrl(img.getImgUrl());
+                        skuImagesEntity.setDefaultImg(img.getDefaultImg());
+                        return skuImagesEntity;
+                    })
+                    // 过滤空图片
+                    .filter(entity -> !StringUtils.isNullOrEmpty(entity.getImgUrl()))
+                    .collect(Collectors.toList());
             // 5.2 sku的图片信pms_sku_images
             skuImagesService.saveBatch(imagesEntities);
             // 5.3 sku的销售属性信息 pms_sku_sale_attr_value
@@ -143,7 +153,11 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
             SkuReductionTo skuReductionTo = new SkuReductionTo();
             BeanUtils.copyProperties(sku, skuReductionTo);
             skuReductionTo.setSkuId(skuId);
-            couponFeignService.saveSkuReduction(skuReductionTo);
+            if (skuReductionTo.getFullCount() > 0 || skuReductionTo.getFullPrice().compareTo(BigDecimal.ZERO) == 1) {
+                log.info("skuReductionTo{}", skuReductionTo);
+                R r1 = couponFeignService.saveSkuReduction(skuReductionTo);
+                log.info("远程调用保存sku的优惠、满减等信息{}", r1);
+            }
         });
 
     }
